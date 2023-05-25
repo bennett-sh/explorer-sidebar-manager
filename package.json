@@ -1,0 +1,42 @@
+{
+  "name": "explorer-sidebar-manager",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev:vite": "vite",
+    "dev:tw": "pnpm run build:tw -- --watch",
+    "dev": "concurrently -n \"pnpm run dev:tw\" \"pnpm run dev:vite\"",
+    "build:vite": "vite build",
+    "build:tw": "tailwindcss -i ./src/input.css -o ./src/output.css",
+    "build": "concurrently -n \"pnpm run build:tw\" \"pnpm run build:vite\"",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.7",
+    "@tauri-apps/api": "^1.3.0",
+    "classnames": "^2.3.2",
+    "flowbite": "^1.6.5",
+    "flowbite-svelte": "^0.36.5",
+    "svelte-routing": "^1.8.9",
+    "tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.0.0",
+    "@tauri-apps/cli": "^1.3.0",
+    "@tsconfig/svelte": "^3.0.0",
+    "@types/node": "^18.7.10",
+    "concurrently": "^8.0.1",
+    "svelte": "^3.54.0",
+    "svelte-check": "^3.0.0",
+    "svelte-heros-v2": "^0.4.2",
+    "svelte-preprocess": "^5.0.0",
+    "tailwindcss": "^3.3.2",
+    "tslib": "^2.4.1",
+    "typescript": "^4.9.5",
+    "vite": "^4.2.1"
+  }
+}
