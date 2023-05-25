@@ -169,7 +169,7 @@ fn create_shortcut_in_clsid(
         Err(err) => return (false, err.to_string()),
     }
     if icon_path.len() > 0 {
-        let (default_icon, _default_icon_disp) = match shortcut.create_subkey("DefaultKey") {
+        let (default_icon, _default_icon_disp) = match shortcut.create_subkey("DefaultIcon") {
             Ok(k) => k,
             Err(err) => return (false, err.to_string()),
         };
@@ -202,12 +202,12 @@ fn create_shortcut_in_clsid(
         Ok(k) => k,
         Err(err) => return (false, err.to_string()),
     };
-    /*match instance.set_value("CLSID", &"") {
+    match instance.set_value("CLSID", &"{0E5AAE11-A475-4c5b-AB00-C66DE400274E}") {
         Ok(()) => (),
         Err(err) => {
             return (false, err.to_string())
         }
-    }*/
+    }
     let (init_prop_bag, _init_prop_bag_disp) = match instance.create_subkey("InitPropertyBag") {
         Ok(k) => k,
         Err(err) => return (false, err.to_string()),
@@ -305,7 +305,7 @@ fn get_shortcut_by_id(id: &str) -> (bool, String, Option<Shortcut>) {
         icon_index: 0,
         icon_path: "".to_string(),
     });
-    let default_icon_key = match shortcut.open_subkey("DefaultKey") {
+    let default_icon_key = match shortcut.open_subkey("DefaultIcon") {
         Ok(key) => key,
         Err(err) => match err.kind() {
             ErrorKind::NotFound => return (true, "".to_string(), no_icon_shortcut),

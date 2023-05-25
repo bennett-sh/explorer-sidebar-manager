@@ -76,7 +76,8 @@
   label:not(.select),
   input:disabled:not(.select),
   input.disabled:not(.select),
-  input[disabled]:not(.select) {
+  input[disabled]:not(.select),
+  button:not(.select) {
     @apply select-none;
   }
 

@@ -7,8 +7,8 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "explorer-sidebar-manager",
-    "version": "0.0.0"
+    "productName": "Explorer Sidebar Manager",
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {

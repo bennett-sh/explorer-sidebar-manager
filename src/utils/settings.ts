@@ -3,7 +3,7 @@ import { Store } from 'tauri-plugin-store-api'
 
 export const settingsStore = new Store('.settings.dat')
 
-export type SettingsKey = 'shortcuts'
+export type SettingsKey = 'shortcuts' | 'hasBeenWelcomed'
 
 export async function setSetting<T>(key: SettingsKey, value: T, save = false) {
   await settingsStore.set(key, value)

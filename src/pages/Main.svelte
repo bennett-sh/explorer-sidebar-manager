@@ -50,7 +50,6 @@
     }
     // reassign to update UI
     shortcuts = shortcuts
-    console.log({ shortcuts, shortcutIDs })
 
     for(const id of invalidOrMissingShortcutIDs) {
       console.log(`cleaning ${id}`)
@@ -88,7 +87,7 @@
   {#if shortcuts && shortcuts?.length > 0}
     <Accordion>
       {#each shortcuts as { name, path, iconPath, iconIndex, guid: id, ...other }}
-        <AccordionItem transitionType='blur'>
+        <AccordionItem>
           <div slot="header" class="w-full mr-4 flex justify-between items-center">
             <span>{name}</span>
             <div class="flex flex-row gap-2 justify-center items-center">

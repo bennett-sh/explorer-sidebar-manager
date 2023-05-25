@@ -76,7 +76,7 @@
           type="text"
           name="path"
           autocomplete="off"
-          placeholder="%USERPROFILE%\my\folder"
+          placeholder="C:\my\folder"
           bind:value={path}
           required />
         <Button outline class="alternative" color="alternative" on:click={async () => {
