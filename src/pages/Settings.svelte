@@ -1,16 +1,11 @@
 <script lang="ts">
-  import { CheckCircle, XCircle, ChevronLeft, Trash, ArrowPath } from 'svelte-heros-v2'
-  import { Heading, Accordion, AccordionItem, Button, Toast } from 'flowbite-svelte'
+  import { Heading, Accordion, AccordionItem, Button } from 'flowbite-svelte'
   import { getVersion, getTauriVersion, getName } from '@tauri-apps/api/app'
-  import ToastContainer from '../lib/ToastContainer.svelte'
+  import { ChevronLeft, Trash, ArrowPath } from 'svelte-heros-v2'
+  import { showQuickToast } from '../utils/toasts'
   import { getSetting } from '../utils/settings'
   import { invoke } from '@tauri-apps/api/tauri'
   import { onMount } from 'svelte'
-
-  let okayMessage = ''
-  let showOkay = false
-  let errorMessage = ''
-  let showError = false
 
   let appName
   let appVersion
@@ -66,11 +61,8 @@
             })
           )
 
-          showOkay = false
-          setTimeout(() => {
-            showOkay = true
-            okayMessage = 'Cleared!'
-          }, 100)
+
+          showQuickToast({ message: 'Cleared!', type: 'Okay' })
         }}>
           <Trash size="16" />
           Clear Shortcuts
@@ -96,24 +88,10 @@
         <b>Tauri Version</b>: {tauriVersion} <br/>
         <b>App Bundle Name</b>: {appName} <br/> <br/>
 
-        © {getCopyrightNoticeYear()} bennett-sh
+        © {getCopyrightNoticeYear()} bennett-sh <br/>
+
+        <a href="https://github.com/bennett-sh/explorer-sidebar-manager" target="_blank" rel="noreferrer noopener">View Source Code on GitHub</a>
       </span>
     </AccordionItem>
   </Accordion>
 </main>
-
-<ToastContainer showOverModal>
-  <Toast bind:open={showError} on:close={() => showError = false} color="red">
-    <svelte:fragment slot="icon">
-      <XCircle color="#f98080" />
-    </svelte:fragment>
-    {errorMessage}
-  </Toast>
-  <Toast bind:open={showOkay} on:close={() => showOkay = false}>
-    <svelte:fragment slot="icon">
-      <CheckCircle color="#00ff00" />
-    </svelte:fragment>
-    {okayMessage}
-  </Toast>
-</ToastContainer>
-

@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { Plus, Pencil, Trash, CheckCircle, XCircle, WrenchScrewdriver } from 'svelte-heros-v2'
   import { Heading, Accordion, AccordionItem, Button, Tooltip, Toast } from 'flowbite-svelte'
+  import { Plus, Pencil, Trash, WrenchScrewdriver } from 'svelte-heros-v2'
   import { GlobalEvent, globalEventState } from '../utils/globalEvents'
   import EditShortcutModal from '../lib/EditShortcutModal.svelte'
   import AddShortcutModal from '../lib/AddShortcutModal.svelte'
   import { getSetting, setSetting } from '../utils/settings'
   import SingleLineCode from '../lib/SingleLineCode.svelte'
-  import ToastContainer from '../lib/ToastContainer.svelte'
+  import { showQuickToast } from '../utils/toasts'
   import { invoke } from '@tauri-apps/api/tauri'
   import { navigate } from 'svelte-routing'
 	import type { Shortcut } from '../types'
@@ -19,11 +19,6 @@
   let shortcutIDs: string[] | null = null
   let shortcuts: Shortcut[] | null = null
   let invalidOrMissingShortcutIDs: Set<string> = new Set()
-
-  let okayMessage = ''
-  let showOkay = false
-  let errorMessage = ''
-  let showError = false
 
   onMount(async () => {
     await loadShortcuts()
@@ -45,14 +40,12 @@
             invalidOrMissingShortcutIDs.add(id)
             continue
           }
-          showError = true
-          errorMessage = `Failed to load shortcut ${id}: ${message}`
+          showQuickToast({ type: 'Error', message: `Failed to load shortcut ${id}: ${message}` })
           continue
         }
         shortcuts.push(shortcut)
       } catch(err) {
-        showError = true
-        errorMessage = `Failed to load shortcut ${id}: ${err}`
+        showQuickToast({ type: 'Error', message: `Failed to load shortcut ${id}: ${err}` })
       }
     }
     // reassign to update UI
@@ -105,24 +98,17 @@
               }}>
                 <Pencil class="outline-none" size="1rem" />
               </Button>
-              <Tooltip placement="left">Edit this shortcut</Tooltip>
+              <Tooltip placement="bottom">Edit this shortcut</Tooltip>
               <Button color="red" outline class="!p-3 !h-10 text-red-500 hover:text-white" on:click={event => {
                 invoke('cleanup_shortcut', { id })
                   .then(() => {
-                    showOkay = true
-                    okayMessage = `Deleted ${name}.`
+                    showQuickToast({ type: 'Okay', message: `Deleted ${name}.` })
 
                     loadShortcuts()
                       .then(() => {})
-                      .catch(err => {
-                        showError = true
-                        errorMessage = `Failed to reload shortcuts: ${err}`
-                      })
+                      .catch(err => showQuickToast({ type: 'Error', message: `Failed to reload shortcuts: ${err}` }))
                   })
-                  .catch(err => {
-                    showError = true
-                    errorMessage = `Failed to delete ${name}: ${err}`
-                  })
+                  .catch(err => showQuickToast({ type: 'Error', message: `Failed to delete ${name}: ${err}` }))
               }}>
                 <Trash class="outline-none" size="1rem" />
               </Button>
@@ -146,19 +132,3 @@
 
 <AddShortcutModal bind:open={addShortcutModalOpen} />
 <EditShortcutModal bind:open={editShortcutModalOpen} {...editShortcutModalData} on:close={() => editShortcutModalData = null} />
-
-<ToastContainer showOverModal>
-  <Toast bind:open={showError} on:close={() => showError = false} color="red">
-    <svelte:fragment slot="icon">
-      <XCircle color="#f98080" />
-    </svelte:fragment>
-    {errorMessage}
-  </Toast>
-  <Toast bind:open={showOkay} on:close={() => showOkay = false}>
-    <svelte:fragment slot="icon">
-      <CheckCircle color="#00ff00" />
-    </svelte:fragment>
-    {okayMessage}
-  </Toast>
-</ToastContainer>
-

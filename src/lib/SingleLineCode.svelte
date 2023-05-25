@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { Button, Toast, Tooltip } from 'flowbite-svelte'
   import { writeText } from '@tauri-apps/api/clipboard'
-  import { Clipboard, XCircle } from 'svelte-heros-v2'
-  import ToastContainer from './ToastContainer.svelte'
+  import { Button, Tooltip } from 'flowbite-svelte'
+  import { showQuickToast } from '../utils/toasts'
+  import { Clipboard } from 'svelte-heros-v2'
 
-  let error = ''
-  let showError = false
   let hasCopied = false
   let content: HTMLElement
 </script>
@@ -22,8 +20,7 @@
       writeText(content.textContent)
         .catch(err => {
           console.error('failed to write to clipboard', err)
-          error = err.toString()
-          showError = true
+          showQuickToast({ type: 'Error', message: `Failed to write to clipboard: ${err}` })
         })
         .then(() => {
           hasCopied = true
@@ -35,12 +32,3 @@
   <Tooltip
     placement="right">{hasCopied ? 'Copied!' : 'Copy'}</Tooltip>
 </span>
-
-<ToastContainer>
-  <Toast bind:open={showError} on:close={() => showError = false} color="red">
-    <svelte:fragment slot="icon">
-      <XCircle color="#f98080" />
-    </svelte:fragment>
-    Failed to copy to clipboard{error.length > 0 ? `: ${error}` : ''}
-  </Toast>
-</ToastContainer>

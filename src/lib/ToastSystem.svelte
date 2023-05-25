@@ -10,10 +10,13 @@
 </script>
 
 <div class="absolute bottom-4 right-4 flex flex-col-reverse gap-2 items-center justify-start z-20">
-  {#each toasts as { type, message, open }, index}
+  {#each toasts as { type, message, open, onClose, id }, index}
     <Toast bind:open={open} on:close={() => {
       toastStore.update(toastsArray => {
-        toastsArray[index].open = false
+        const result = onClose({ id })
+        if(result !== false) {
+          toastsArray[index].open = false
+        }
         return toastsArray
       })
     }}>

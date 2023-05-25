@@ -69,6 +69,10 @@ label:not(.select),
           user-select: none;
 }
 
+a:hover {
+  text-decoration-line: underline;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -299,6 +303,10 @@ label:not(.select),
   z-index: 10;
 }
 
+.z-20 {
+  z-index: 20;
+}
+
 .z-30 {
   z-index: 30;
 }
@@ -309,10 +317,6 @@ label:not(.select),
 
 .z-50 {
   z-index: 50;
-}
-
-.z-20 {
-  z-index: 20;
 }
 
 .col-span-2 {

@@ -9,13 +9,22 @@ export function showToast(toast: ToastData): ToastRef {
   toastStore.update(
     data => [
       ...data,
-      { ...toast, id }
+      { open: true, ...toast, id }
     ]
   )
 
   return {
     id
   }
+}
+export function showQuickToast(toast: ToastData): ToastRef {
+  return showToast({
+    ...toast,
+    onClose(ref) {
+      removeToast(ref)
+      if(toast.onClose) return toast.onClose(ref)
+    }
+  })
 }
 
 export function closeToast(toastRef: ToastRef) {
@@ -40,5 +49,11 @@ export function openToast(toastRef: ToastRef) {
         }
       ) : toast
     )
+  )
+}
+
+export function removeToast(toastRef: ToastRef) {
+  toastStore.update(
+    data => data.filter(({ id }) => toastRef.id !== id)
   )
 }

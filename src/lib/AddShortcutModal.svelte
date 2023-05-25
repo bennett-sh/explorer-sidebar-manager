@@ -1,24 +1,19 @@
 <script lang="ts">
-  import { Button, ButtonGroup, Input, Label, Modal, Toast } from 'flowbite-svelte'
-  import { getSetting, setSetting, saveSettings } from '../utils/settings'
-  import { FolderOpen, XCircle, CheckCircle } from 'svelte-heros-v2'
+  import { Button, ButtonGroup, Input, Label, Modal } from 'flowbite-svelte'
   import { open as openFilePicker } from '@tauri-apps/api/dialog'
   import { GlobalEvent, emitEvent } from '../utils/globalEvents'
-  import ToastContainer from './ToastContainer.svelte'
+  import { getSetting, setSetting } from '../utils/settings'
+  import { showQuickToast } from '../utils/toasts'
   import { createEventDispatcher } from 'svelte'
   import { invoke } from '@tauri-apps/api/tauri'
+  import { FolderOpen } from 'svelte-heros-v2'
   import { v4 as uuidv4 } from 'uuid'
 
   const dispatch = createEventDispatcher()
 
   export let open = false
 
-  let okayMessage = ''
-  let showOkay = false
-  let errorMessage = ''
-  let showError = false
-
-  let guid = uuidv4()
+  let guid = ''
   let name = ''
   let path = ''
   let iconPath = ''
@@ -26,36 +21,26 @@
 
   async function addShortcut(data: any) {
     getSetting('shortcuts', [])
-        .then(shortcuts =>
-          setSetting('shortcuts', [...new Set([...shortcuts, guid])], /*save = */true)
-            .then(() => {
-              (invoke('add_shortcut', data) as Promise<[boolean, string]>)
-                .then(([success, msg]) => {
-                  if(!success) {
-                    showError = true
-                    errorMessage = `Failed to add shortcut: ${msg}`
-                    return
-                  }
-                  open = false
-                  okayMessage = 'Added shortcut successfully'
-                  if(msg) okayMessage += `: ${msg}`
-                  showOkay = true
-                  emitEvent({ type: GlobalEvent.DataChange })
-                })
-                .catch(err => {
-                  showError = true
-                  errorMessage = `Failed to add shortcut: ${err}`
-                })
-            })
-            .catch(err => {
-              showError = true
-              errorMessage = `Failed to write settings: ${err}`
-            })
-        )
-        .catch(err => {
-          showError = true
-          errorMessage = `Failed to read settings: ${err}`
-        })
+      .then(shortcuts =>
+        setSetting('shortcuts', [...new Set([...shortcuts, guid])], /*save = */true)
+          .then(() => {
+            (invoke('add_shortcut', data) as Promise<[boolean, string]>)
+              .then(([success, msg]) => {
+                if(!success) {
+                  showQuickToast({ type: 'Error', message: `Failed to add shortcut: ${msg}` })
+                  return
+                }
+                open = false
+                let message = 'Added shortcut successfully'
+                if(msg) message += `: ${msg}`
+                showQuickToast({ type: 'Okay', message })
+                emitEvent({ type: GlobalEvent.DataChange })
+              })
+              .catch(err => showQuickToast({ type: 'Error', message: `Failed to add shortcut: ${err}` }))
+          })
+          .catch(err => showQuickToast({ type: 'Error', message: `Failed to write settings: ${err}` }))
+      )
+      .catch(err => showQuickToast({ type: 'Error', message: `Failed to read settings: ${err}` }))
   }
 </script>
 
@@ -68,6 +53,7 @@
     action="#"
     on:submit={async event => {
       event.preventDefault()
+      guid = uuidv4()
       const data = { name, path, iconPath, iconIndex: iconIndex.toString(), guid }
       dispatch('submit', data)
       await addShortcut(data)
@@ -131,18 +117,3 @@
     </div>
   </form>
 </Modal>
-
-<ToastContainer showOverModal>
-  <Toast bind:open={showError} on:close={() => showError = false} color="red">
-    <svelte:fragment slot="icon">
-      <XCircle color="#f98080" />
-    </svelte:fragment>
-    {errorMessage}
-  </Toast>
-  <Toast bind:open={showOkay} on:close={() => showOkay = false}>
-    <svelte:fragment slot="icon">
-      <CheckCircle color="#00ff00" />
-    </svelte:fragment>
-    {okayMessage}
-  </Toast>
-</ToastContainer>

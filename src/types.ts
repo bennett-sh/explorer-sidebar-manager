@@ -10,7 +10,8 @@ export interface Shortcut {
 export interface ToastData {
   type: 'Okay' | 'Error' | 'Info' | null
   message: string
-  open: boolean
+  onClose?: (ref: ToastRef) => boolean | void
+  open?: boolean
   id?: string
 }
 export interface ToastRef {

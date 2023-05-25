@@ -79,4 +79,8 @@
   input[disabled]:not(.select) {
     @apply select-none;
   }
+
+  a {
+    @apply hover:underline;
+  }
 }
