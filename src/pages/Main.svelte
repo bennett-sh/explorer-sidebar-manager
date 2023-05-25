@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Heading, Accordion, AccordionItem, Button, Tooltip, Toast } from 'flowbite-svelte'
+  import { Heading, Accordion, AccordionItem, Button, Tooltip } from 'flowbite-svelte'
   import { Plus, Pencil, Trash, WrenchScrewdriver } from 'svelte-heros-v2'
   import { GlobalEvent, globalEventState } from '../utils/globalEvents'
   import EditShortcutModal from '../lib/EditShortcutModal.svelte'
@@ -95,6 +95,7 @@
               <Button class="alternative !p-3 !h-10" color="alternative" outline on:click={() => {
                 editShortcutModalOpen = true
                 editShortcutModalData = { name, path, iconPath, iconIndex, guid: id, ...other }
+                console.log(editShortcutModalData)
               }}>
                 <Pencil class="outline-none" size="1rem" />
               </Button>

@@ -17,6 +17,8 @@
   export let iconPath = ''
   export let iconIndex = 0
 
+  console.log(path)
+
   async function updateShortcut(data: any) {
     (invoke('add_shortcut', data) as Promise<[boolean, string]>)
       .then(([success, msg]) => {

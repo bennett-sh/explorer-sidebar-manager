@@ -294,14 +294,14 @@ fn get_shortcut_by_id(id: &str) -> (bool, String, Option<Shortcut>) {
         Ok(key) => key,
         Err(err) => return (false, err.to_string(), None),
     };
-    let path = match bag.get_value("TargetFolderPath") {
+    let path: String = match bag.get_value("TargetFolderPath") {
         Ok(path) => path,
         Err(err) => return (false, err.to_string(), None),
     };
     let no_icon_shortcut = Some(Shortcut {
         guid: id.to_string(),
         name: name.clone(),
-        path,
+        path: path.clone(),
         icon_index: 0,
         icon_path: "".to_string(),
     });
@@ -312,17 +312,17 @@ fn get_shortcut_by_id(id: &str) -> (bool, String, Option<Shortcut>) {
             _ => return (true, err.to_string(), None),
         },
     };
-    let path: String = match default_icon_key.get_value("") {
+    let icon_path_with_index: String = match default_icon_key.get_value("") {
         Ok(path) => path,
         Err(err) => match err.kind() {
             ErrorKind::NotFound => return (true, "".to_string(), no_icon_shortcut),
             _ => return (true, err.to_string(), None),
         },
     };
-    let split_path = path.split(',').collect::<Vec<&str>>();
-    let icon_path = split_path[0].to_string();
-    let icon_index_str = if split_path.len() > 1 {
-        split_path[1]
+    let split_icon_path = icon_path_with_index.split(',').collect::<Vec<&str>>();
+    let icon_path = split_icon_path[0].to_string();
+    let icon_index_str = if split_icon_path.len() > 1 {
+        split_icon_path[1]
     } else {
         "0"
     };

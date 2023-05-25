@@ -4100,7 +4100,7 @@ html, body, #app {
 }
 
 .titlebar {
-  z-index: 50;
+  z-index: 99;
   height: 30px;
   -webkit-user-select: none;
      -moz-user-select: none;
